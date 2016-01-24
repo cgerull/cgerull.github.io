@@ -3,36 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Shrink logic volume | Development &amp; Operations</title>
+  <title>Development &amp; Operations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="In this post I will point out the steps to shrink logic volumes.
-The order of shrinking is just the reverse of expanding:
-
-un-mount the file system
-check file system integrity
-shrink file system
-shrin">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Shrink logic volume">
-<meta property="og:url" content="http://devop.gerull.nl/2014/04/08/shrink-logic-volume/index.html">
+  <meta name="description" content="A collection of short articles to summerize and memorize seldom used tasks.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Development & Operations">
+<meta property="og:url" content="http://devop.gerull.nl/page/2/index.html">
 <meta property="og:site_name" content="Development & Operations">
-<meta property="og:description" content="In this post I will point out the steps to shrink logic volumes.
-The order of shrinking is just the reverse of expanding:
-
-un-mount the file system
-check file system integrity
-shrink file system
-shrin">
-<meta property="og:updated_time" content="2016-01-21T16:22:34.000Z">
+<meta property="og:description" content="A collection of short articles to summerize and memorize seldom used tasks.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Shrink logic volume">
-<meta name="twitter:description" content="In this post I will point out the steps to shrink logic volumes.
-The order of shrinking is just the reverse of expanding:
-
-un-mount the file system
-check file system integrity
-shrink file system
-shrin">
+<meta name="twitter:title" content="Development & Operations">
+<meta name="twitter:description" content="A collection of short articles to summerize and memorize seldom used tasks.">
 <meta name="twitter:creator" content="@cgerull">
 <link rel="publisher" href="https://plus.google.com/+cgerull">
   
@@ -84,10 +65,12 @@ shrin">
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-shrink-logic-volume" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main">
+  
+    <article id="post-linux-file-system" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/04/08/shrink-logic-volume/" class="article-date">
-  <time datetime="2014-04-08T19:37:35.000Z" itemprop="datePublished">2014-04-08</time>
+    <a href="/2014/02/22/linux-file-system/" class="article-date">
+  <time datetime="2014-02-21T23:53:51.000Z" itemprop="datePublished">2014-02-22</time>
 </a>
     
   <div class="article-category">
@@ -101,8 +84,8 @@ shrin">
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      Shrink logic volume
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/02/22/linux-file-system/">Linux File System</a>
     </h1>
   
 
@@ -110,55 +93,41 @@ shrin">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>In this post I will point out the steps to shrink logic volumes.</p>
-<p>The order of shrinking is just the reverse of expanding:</p>
-<ul>
-<li>un-mount the file system</li>
-<li>check file system integrity</li>
-<li>shrink file system</li>
-<li>shrink logic volume.</li>
-</ul>
-<p><strong>Before you start make sure you have recent backup of the disk.</strong> </p>
-<h2 id="The_steps_in_detail"><a href="#The_steps_in_detail" class="headerlink" title="The steps in detail"></a>The steps in detail</h2><p>1. First un-mount the file system to make sure no one has access anymore. For some file systems you must switch to single user mode for this. Then check the file system integrity.<br>/yyy is the mount point<br><code>sudo umount /yyy</code><br>This is the logical volume. vg-xxx is the volume group and yyy is the symbolic name of the lv.<br><code>sudo e2fsck -f /dev/mapper/vg-xxx/yyy</code></p>
-<p>2. Shrink the file system to some point<br><code>sudo resize2fs /dev/mapper/vg-xxx/yyy 2000M</code><br>Here it goes down to 2G, but <strong>above</strong> the physical size of existing files. This command works for both ext2 and ext3.</p>
-<p>3. Shrink the logic volume<br><code>sudo lvresize -L -1G /dev/mapper/vg-xxx/yyy</code><br>Here the logic volume is shrunk by 1G. Don’t shrink beyond your file system size, the consequences are disastrous. Do the math.</p>
-<p>4. Expand the file system to fit the shrunk logic volume<br><code>sudo resize2fs -p /dev/mapper/vg-xxx/yyy</code></p>
-<p>5. Remount the file system.</p>
+        <p>This is just a short example how I use the Linux file system. A full discussion with lot’s of links you will find on <a href="http://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard" title="Wikipedia" target="_blank" rel="external">Wikipedia</a>. The home of the Linux File System Hierarchy is <a href="http://www.pathname.com/fhs/" title="FHS" target="_blank" rel="external">here</a>.<br>The layout below is the (almost) default of Debian and Ubuntu distributions.</p>
+<p>&nbsp;</p>
+<p><strong>/home</strong></p>
+<p>Just for personal settings, annotations  and workspaces.</p>
+<p><strong>/tmp</strong></p>
+<p>Classic place to put everything short living. Probably best to (automatically) clean it out regularly.</p>
+<p><strong>/var/www</strong></p>
+<p>Static and dynamic websites</p>
+<p>/<strong>var/database</strong></p>
+<p>Database data-files, if big put on its own logical volume.</p>
+<p><strong>/var/&lt;app-name&gt;</strong></p>
+<p>Any other non-web, non-db data or archive files.</p>
+<p>&nbsp;</p>
+<p>Other distributions use slightly different file system layouts and the data-files are maybe in different folders, but as mentioned earlier this is my personal approach.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/04/08/shrink-logic-volume/" data-id="cijt2db8r000bq81yt0v49cnd" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/02/22/linux-file-system/" data-id="cijt2db8v000iq81ytqvnbfc2" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
 
     </footer>
   </div>
   
-    
-<nav id="article-nav">
-  
-    <a href="/2014/09/22/git-for-ubuntu/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Git for Ubuntu
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2014/03/23/expand-logic-volume/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Expand logic volume</div>
-    </a>
-  
-</nav>
-
-  
 </article>
 
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </nav>
+  
 </section>
         
           <aside id="sidebar">
