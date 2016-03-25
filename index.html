@@ -67,6 +67,87 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-git_rebase" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/23/git_rebase/" class="article-date">
+  <time datetime="2016-03-23T21:23:17.000Z" itemprop="datePublished">2016-03-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/23/git_rebase/">Git rebase</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#Git rebase</p>
+<p>The git rebase command is one of the more powerfull and advanced commands. You can use it to avoid overly complex merge operations. The common practice in Git is to do lot’s of small commit’s. But when your code builds fine and you don’t need that detailed piece of history anymore, you can compact these small commits into one or two big commits.</p>
+<p>The ultimate source and authority on all Git commands is <a href="https://git-scm.com/book/en/v2" target="_blank" rel="external"><em>Pro Git</em></a> the Git book.</p>
+<h2 id="Rebase_before_merge"><a href="#Rebase_before_merge" class="headerlink" title="Rebase before merge"></a>Rebase before merge</h2><p>A good practice is to always rebase before a merge. Git will produce a more comprehensive timeline. Especiallyt with with larger branches it will make it easier to fast forward.<br>What you do with rebase is to move your point in time where you branched. The less changes are on the timeline you want to merge (back) to, the chance of conflicts you have.</p>
+<h3 id="Rebase_to_simplify_merging"><a href="#Rebase_to_simplify_merging" class="headerlink" title="Rebase to simplify merging"></a>Rebase to simplify merging</h3><p>We have a master and one branch b1. After adding a third file and some content you needed to go back to master for some other work.</p>
+<pre><code>$ git lg
+* 6350dfa (HEAD, master) Add fourish content
+* 217709e Add fourth file.
+| * f20dfb3 (b1) Add more content
+| * 2e5d2df Add third file.
+|/  
+* df37868 Add second file
+* fd37cc9 Initial commit.
+</code></pre><p>If you merge b1 now into the master you end up with a hump in your history line. That is, of course, the historical correct representation. But in practice lot’s these little bumps make your timeline harder to understand. As we have made changes to different files, the order doesn’t really matter. (As long as you no major change to dependencies between those files.)<br>To rewrite history and straighten your timeline, checkout branch b1 first.</p>
+<pre><code>$ git checkout b1
+$ git lg
+* 6350dfa (master) Add fourish content
+* 217709e Add fourth file.
+| * f20dfb3 (HEAD, b1) Add more content
+| * 2e5d2df Add third file.
+|/  
+* df37868 Add second file
+* fd37cc9 Initial commit.
+</code></pre><p>Now execute the rebase command. What this command actually does goes as follow.<br>First the changes are save to a temporare place. The commit df37868 is checked out. Now Git applies the commits 217709e and 6350dfa. At last the saved changes 2e5d2df and f20dfb3 are applied.<br>The repository contains the same changes, but looks a lot clearer.</p>
+<pre><code>$ git rebase master
+First, rewinding head to replay your work on top of it...
+Applying: Add third file.
+Applying: Add more content
+$ git lg
+* de27624 (HEAD, b1) Add more content
+* 39dde4e Add third file.
+* 6350dfa (master) Add fourish content
+* 217709e Add fourth file.
+* df37868 Add second file
+* fd37cc9 Initial 
+</code></pre><p>This is a very  simple example. More complex scenarios are in Pro Git. Just imagine working on new features but get interupted by a couple of changes / fixes to the latest release.</p>
+<h2 id="Rebase_on_pull"><a href="#Rebase_on_pull" class="headerlink" title="Rebase on pull"></a>Rebase on pull</h2><p>To simplify the incorporation of changes from your team use git pull –rebase for every pull you made. Git will automatically check if can rebase the changes and keep your history simple.</p>
+<p>Make your life easier and put this command in your config file.<br> git config –global pull.rebase true.</p>
+<h2 id="Don_u2019t_mess_with_time"><a href="#Don_u2019t_mess_with_time" class="headerlink" title="Don’t mess with time"></a>Don’t mess with time</h2><p>As convenient as rebase is, you are changing local history. When the commits your are moving on the timeline only exist in your local repository nothing bad happens.<br>But if you try to rebase commits that are already pushed to upstream repositories you probably get in trouble. The Pro Git book is quite elaborate on these cases and the documentation to read if you want to dive deeper into rebasing.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devop.gerull.nl/2016/03/23/git_rebase/" data-id="cim7oi92v000u40um7ky6c0p4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hexo" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/01/23/hexo/" class="article-date">
@@ -100,7 +181,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2016/01/23/hexo/" data-id="cijt4pudq000nlr1yqqc50l7g" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2016/01/23/hexo/" data-id="cim7oi92q000n40umgq2fzzjr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li></ul>
@@ -158,7 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/09/22/git-for-ubuntu/" data-id="cijt4pudv000ulr1y2h74zwlp" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/09/22/git-for-ubuntu/" data-id="cim7oi92z000z40umvej9wl59" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li></ul>
@@ -214,7 +295,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/04/08/shrink-logic-volume/" data-id="cijt4pudk000blr1ynpsnvq3c" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/04/08/shrink-logic-volume/" data-id="cim7oi92j000b40umch2zt2b4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
@@ -272,86 +353,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/03/23/expand-logic-volume/" data-id="cijt4pudz0013lr1yssii2mv3" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/03/23/expand-logic-volume/" data-id="cim7oi935001740um6da6scdl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-volume-layout" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/03/01/volume-layout/" class="article-date">
-  <time datetime="2014-03-01T08:15:32.000Z" itemprop="datePublished">2014-03-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/03/01/volume-layout/">Volume layout</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Here’s my personal preference for an allround Linux box. The following volume layout is a baseline. If the machine is a server reduce /home and add much more to /var where normally you data lives. For a development box increase /home for all your projects.</p>
-<p>I use the lvm2 package, so these commands use the most common options.</p>
-<h2 id="First_harddrive"><a href="#First_harddrive" class="headerlink" title="First harddrive"></a>First harddrive</h2><p>With fdisk /dev/sda</p>
-<ol>
-<li>Use fdisk /dev/sda to partion your first drive<ul>
-<li>/dev/sda1 &gt; /boot ext3, 256MB</li>
-<li>/dev/sda2 &gt; Linux LVM (8e), rest of the drive</li>
-</ul>
-</li>
-</ol>
-<p>With lvm2 tools</p>
-<ol>
-<li><p>pvcreate /dev/sda2  # create the physical volume</p>
-</li>
-<li><p>vgcreate vg0 /dev/sda # create one volume group for the system volumes</p>
-</li>
-<li><p>lvcreate -L 2G - n root vg0   # format as ext3 and mount on /</p>
-</li>
-<li><p>lvcreate -L &lt;depending on memory and disksize&gt; -n swap vg0 # use as swaparea</p>
-</li>
-<li><p>lvcreate -L 2G -n usr vg0   # format as  ext3 mount on /usr</p>
-</li>
-<li><p>lvcreate -L 512M -n tmp -vg0   # format as  ext3, mount on /tmp</p>
-</li>
-<li><p>lvcreate -L &lt;512M - 2G&gt; -n home vg0   # format as  ext3, mount on /home</p>
-</li>
-<li><p>lvcreate -L 256M -n opt vg0   # format as  ext3, mount on /opt</p>
-</li>
-<li><p>lvcreate -L 512M -n usrlocal vg0   # format as  ext3, mount on /usrlocal</p>
-</li>
-<li><p>lvcreate -L &lt;1G - nG&gt; -n var vg0   # format as  ext3, mount on /var</p>
-</li>
-</ol>
-<h2 id="Additional_harddisks"><a href="#Additional_harddisks" class="headerlink" title="Additional harddisks"></a>Additional harddisks</h2><p>When you install / assign more than one drive you can must create a LVM partiton with fdisk and then you can extend the physical volume. It’s up to you to extend the volume group too or create a second vg.<br>In case of extenting the first vg you can extent the logical volume where the space is needed. If you have installed an application you can also dedicate a logical volume to that application and mount it where approbiate.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/03/01/volume-layout/" data-id="cijt4pucp0000lr1yewjtjvwl" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Installation/">Installation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
 
     </footer>
   </div>
@@ -373,7 +378,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a><span class="category-list-count">1</span></li></ul></li></ul>
     </div>
   </div>
 
@@ -382,7 +387,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -391,7 +396,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/File-System/" style="font-size: 16.67px;">File System</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 13.33px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 13.33px;">Logical Volumes</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
+      <a href="/tags/File-System/" style="font-size: 17.5px;">File System</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 15px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 15px;">Logical Volumes</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
     </div>
   </div>
 

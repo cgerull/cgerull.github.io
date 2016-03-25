@@ -67,6 +67,82 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-volume-layout" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/01/volume-layout/" class="article-date">
+  <time datetime="2014-03-01T08:15:32.000Z" itemprop="datePublished">2014-03-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/03/01/volume-layout/">Volume layout</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Here’s my personal preference for an allround Linux box. The following volume layout is a baseline. If the machine is a server reduce /home and add much more to /var where normally you data lives. For a development box increase /home for all your projects.</p>
+<p>I use the lvm2 package, so these commands use the most common options.</p>
+<h2 id="First_harddrive"><a href="#First_harddrive" class="headerlink" title="First harddrive"></a>First harddrive</h2><p>With fdisk /dev/sda</p>
+<ol>
+<li>Use fdisk /dev/sda to partion your first drive<ul>
+<li>/dev/sda1 &gt; /boot ext3, 256MB</li>
+<li>/dev/sda2 &gt; Linux LVM (8e), rest of the drive</li>
+</ul>
+</li>
+</ol>
+<p>With lvm2 tools</p>
+<ol>
+<li><p>pvcreate /dev/sda2  # create the physical volume</p>
+</li>
+<li><p>vgcreate vg0 /dev/sda # create one volume group for the system volumes</p>
+</li>
+<li><p>lvcreate -L 2G - n root vg0   # format as ext3 and mount on /</p>
+</li>
+<li><p>lvcreate -L &lt;depending on memory and disksize&gt; -n swap vg0 # use as swaparea</p>
+</li>
+<li><p>lvcreate -L 2G -n usr vg0   # format as  ext3 mount on /usr</p>
+</li>
+<li><p>lvcreate -L 512M -n tmp -vg0   # format as  ext3, mount on /tmp</p>
+</li>
+<li><p>lvcreate -L &lt;512M - 2G&gt; -n home vg0   # format as  ext3, mount on /home</p>
+</li>
+<li><p>lvcreate -L 256M -n opt vg0   # format as  ext3, mount on /opt</p>
+</li>
+<li><p>lvcreate -L 512M -n usrlocal vg0   # format as  ext3, mount on /usrlocal</p>
+</li>
+<li><p>lvcreate -L &lt;1G - nG&gt; -n var vg0   # format as  ext3, mount on /var</p>
+</li>
+</ol>
+<h2 id="Additional_harddisks"><a href="#Additional_harddisks" class="headerlink" title="Additional harddisks"></a>Additional harddisks</h2><p>When you install / assign more than one drive you can must create a LVM partiton with fdisk and then you can extend the physical volume. It’s up to you to extend the volume group too or create a second vg.<br>In case of extenting the first vg you can extent the logical volume where the space is needed. If you have installed an application you can also dedicate a logical volume to that application and mount it where approbiate.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devop.gerull.nl/2014/03/01/volume-layout/" data-id="cim7oi921000040umtojkvdrx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Installation/">Installation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-linux-file-system" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/02/22/linux-file-system/" class="article-date">
@@ -111,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/02/22/linux-file-system/" data-id="cijt4pudn000ilr1ysjyfxkwg" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/02/22/linux-file-system/" data-id="cim7oi92n000i40umj2ys5rgj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
@@ -136,7 +212,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a><span class="category-list-count">1</span></li></ul></li></ul>
     </div>
   </div>
 
@@ -145,7 +221,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -154,7 +230,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/File-System/" style="font-size: 16.67px;">File System</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 13.33px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 13.33px;">Logical Volumes</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
+      <a href="/tags/File-System/" style="font-size: 17.5px;">File System</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 15px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 15px;">Logical Volumes</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
     </div>
   </div>
 

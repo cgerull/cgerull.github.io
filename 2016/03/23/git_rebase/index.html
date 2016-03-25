@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Expand logic volume | Development &amp; Operations</title>
+  <title>Git rebase | Development &amp; Operations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Logical volumes are easy to extend. The basic steps are like this: check free space –&amp;gt; expand logic volume –&amp;gt; expand file system. You can do it even with file system mounted.
-Although I recommen">
+  <meta name="description" content="#Git rebase
+The git rebase command is one of the more powerfull and advanced commands. You can use it to avoid overly complex merge operations. The common practice in Git is to do lot’s of small commi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Expand logic volume">
-<meta property="og:url" content="http://devop.gerull.nl/2014/03/23/expand-logic-volume/index.html">
+<meta property="og:title" content="Git rebase">
+<meta property="og:url" content="http://devop.gerull.nl/2016/03/23/git_rebase/index.html">
 <meta property="og:site_name" content="Development & Operations">
-<meta property="og:description" content="Logical volumes are easy to extend. The basic steps are like this: check free space –&amp;gt; expand logic volume –&amp;gt; expand file system. You can do it even with file system mounted.
-Although I recommen">
-<meta property="og:updated_time" content="2016-01-19T15:36:55.000Z">
+<meta property="og:description" content="#Git rebase
+The git rebase command is one of the more powerfull and advanced commands. You can use it to avoid overly complex merge operations. The common practice in Git is to do lot’s of small commi">
+<meta property="og:updated_time" content="2016-03-23T22:00:02.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Expand logic volume">
-<meta name="twitter:description" content="Logical volumes are easy to extend. The basic steps are like this: check free space –&amp;gt; expand logic volume –&amp;gt; expand file system. You can do it even with file system mounted.
-Although I recommen">
+<meta name="twitter:title" content="Git rebase">
+<meta name="twitter:description" content="#Git rebase
+The git rebase command is one of the more powerfull and advanced commands. You can use it to avoid overly complex merge operations. The common practice in Git is to do lot’s of small commi">
 <meta name="twitter:creator" content="@cgerull">
 <link rel="publisher" href="https://plus.google.com/+cgerull">
   
@@ -69,14 +69,14 @@ Although I recommen">
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-expand-logic-volume" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-git_rebase" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/03/23/expand-logic-volume/" class="article-date">
-  <time datetime="2014-03-23T21:20:10.000Z" itemprop="datePublished">2014-03-23</time>
+    <a href="/2016/03/23/git_rebase/" class="article-date">
+  <time datetime="2016-03-23T21:23:17.000Z" itemprop="datePublished">2016-03-23</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    <a class="article-category-link" href="/categories/Git/">Git</a>
   </div>
 
   </div>
@@ -87,7 +87,7 @@ Although I recommen">
         
   
     <h1 class="article-title" itemprop="name">
-      Expand logic volume
+      Git rebase
     </h1>
   
 
@@ -95,30 +95,53 @@ Although I recommen">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Logical volumes are easy to extend. The basic steps are like this: check free space –&gt; expand logic volume –&gt; expand file system. You can do it even with file system mounted.</p>
-<p>Although I recommend to make a backup first and switch to single user mode  if it is a server.</p>
-<p>Here’s the recipe:</p>
-<p>1. Check the mounted file system with</p>
-<p><code>df -h</code></p>
-<p>2. Check the available logic volumes</p>
-<p><code>sudo lvdisplay</code></p>
-<p>3. Check how much free space available in this volume group for the growth</p>
-<p><code>sudo vgdisplay</code></p>
-<p>4. Now resize the logic volume up to some point (of course within the free space limit)</p>
-<p><code>sudo lvresize -L +1GB /dev/mapper/vg-xxx/yyy</code></p>
-<p>5. Check the new size of the logic volume</p>
-<p><code>sudo lvdisplay</code></p>
-<p>6. Expand the existing file system to the size of logic volume</p>
-<p><code>sudo resize2fs -p /dev/mapper/vg-xxx/yyy</code></p>
-<p>This command works for both ext2 and ext3 file systems.</p>
+        <p>#Git rebase</p>
+<p>The git rebase command is one of the more powerfull and advanced commands. You can use it to avoid overly complex merge operations. The common practice in Git is to do lot’s of small commit’s. But when your code builds fine and you don’t need that detailed piece of history anymore, you can compact these small commits into one or two big commits.</p>
+<p>The ultimate source and authority on all Git commands is <a href="https://git-scm.com/book/en/v2" target="_blank" rel="external"><em>Pro Git</em></a> the Git book.</p>
+<h2 id="Rebase_before_merge"><a href="#Rebase_before_merge" class="headerlink" title="Rebase before merge"></a>Rebase before merge</h2><p>A good practice is to always rebase before a merge. Git will produce a more comprehensive timeline. Especiallyt with with larger branches it will make it easier to fast forward.<br>What you do with rebase is to move your point in time where you branched. The less changes are on the timeline you want to merge (back) to, the chance of conflicts you have.</p>
+<h3 id="Rebase_to_simplify_merging"><a href="#Rebase_to_simplify_merging" class="headerlink" title="Rebase to simplify merging"></a>Rebase to simplify merging</h3><p>We have a master and one branch b1. After adding a third file and some content you needed to go back to master for some other work.</p>
+<pre><code>$ git lg
+* 6350dfa (HEAD, master) Add fourish content
+* 217709e Add fourth file.
+| * f20dfb3 (b1) Add more content
+| * 2e5d2df Add third file.
+|/  
+* df37868 Add second file
+* fd37cc9 Initial commit.
+</code></pre><p>If you merge b1 now into the master you end up with a hump in your history line. That is, of course, the historical correct representation. But in practice lot’s these little bumps make your timeline harder to understand. As we have made changes to different files, the order doesn’t really matter. (As long as you no major change to dependencies between those files.)<br>To rewrite history and straighten your timeline, checkout branch b1 first.</p>
+<pre><code>$ git checkout b1
+$ git lg
+* 6350dfa (master) Add fourish content
+* 217709e Add fourth file.
+| * f20dfb3 (HEAD, b1) Add more content
+| * 2e5d2df Add third file.
+|/  
+* df37868 Add second file
+* fd37cc9 Initial commit.
+</code></pre><p>Now execute the rebase command. What this command actually does goes as follow.<br>First the changes are save to a temporare place. The commit df37868 is checked out. Now Git applies the commits 217709e and 6350dfa. At last the saved changes 2e5d2df and f20dfb3 are applied.<br>The repository contains the same changes, but looks a lot clearer.</p>
+<pre><code>$ git rebase master
+First, rewinding head to replay your work on top of it...
+Applying: Add third file.
+Applying: Add more content
+$ git lg
+* de27624 (HEAD, b1) Add more content
+* 39dde4e Add third file.
+* 6350dfa (master) Add fourish content
+* 217709e Add fourth file.
+* df37868 Add second file
+* fd37cc9 Initial 
+</code></pre><p>This is a very  simple example. More complex scenarios are in Pro Git. Just imagine working on new features but get interupted by a couple of changes / fixes to the latest release.</p>
+<h2 id="Rebase_on_pull"><a href="#Rebase_on_pull" class="headerlink" title="Rebase on pull"></a>Rebase on pull</h2><p>To simplify the incorporation of changes from your team use git pull –rebase for every pull you made. Git will automatically check if can rebase the changes and keep your history simple.</p>
+<p>Make your life easier and put this command in your config file.<br> git config –global pull.rebase true.</p>
+<h2 id="Don_u2019t_mess_with_time"><a href="#Don_u2019t_mess_with_time" class="headerlink" title="Don’t mess with time"></a>Don’t mess with time</h2><p>As convenient as rebase is, you are changing local history. When the commits your are moving on the timeline only exist in your local repository nothing bad happens.<br>But if you try to rebase commits that are already pushed to upstream repositories you probably get in trouble. The Pro Git book is quite elaborate on these cases and the documentation to read if you want to dive deeper into rebasing.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/03/23/expand-logic-volume/" data-id="cim7oi935001740um6da6scdl" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2016/03/23/git_rebase/" data-id="cim7oi92v000u40um7ky6c0p4" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li></ul>
 
     </footer>
   </div>
@@ -126,19 +149,10 @@ Although I recommen">
     
 <nav id="article-nav">
   
-    <a href="/2014/04/08/shrink-logic-volume/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Shrink logic volume
-        
-      </div>
-    </a>
   
-  
-    <a href="/2014/03/01/volume-layout/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/01/23/hexo/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Volume layout</div>
+      <div class="article-nav-title">Hexo</div>
     </a>
   
 </nav>
