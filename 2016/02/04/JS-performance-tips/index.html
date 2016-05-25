@@ -3,17 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Development &amp; Operations</title>
+  <title>Javascript performance tips | Development &amp; Operations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="A collection of short articles to summerize and memorize seldom used tasks.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Development & Operations">
-<meta property="og:url" content="http://devop.gerull.nl/index.html">
+  <meta name="description" content="A few techniques that can enhance performance of script execution and page load times.
+For-loop optimalisationTwo simple practices can improve the performance, especially of long loops, significant. R">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript performance tips">
+<meta property="og:url" content="http://devop.gerull.nl/2016/02/04/JS-performance-tips/index.html">
 <meta property="og:site_name" content="Development & Operations">
-<meta property="og:description" content="A collection of short articles to summerize and memorize seldom used tasks.">
+<meta property="og:description" content="A few techniques that can enhance performance of script execution and page load times.
+For-loop optimalisationTwo simple practices can improve the performance, especially of long loops, significant. R">
+<meta property="og:updated_time" content="2016-03-26T18:33:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Development & Operations">
-<meta name="twitter:description" content="A collection of short articles to summerize and memorize seldom used tasks.">
+<meta name="twitter:title" content="Javascript performance tips">
+<meta name="twitter:description" content="A few techniques that can enhance performance of script execution and page load times.
+For-loop optimalisationTwo simple practices can improve the performance, especially of long loops, significant. R">
 <meta name="twitter:creator" content="@cgerull">
 <link rel="publisher" href="https://plus.google.com/+cgerull">
   
@@ -80,152 +84,7 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-git_rebase" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/03/23/git_rebase/" class="article-date">
-  <time datetime="2016-03-23T21:23:17.000Z" itemprop="datePublished">2016-03-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/23/git_rebase/">Git rebase</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>#Git rebase</p>
-<p>The git rebase command is one of the more powerfull and advanced commands. You can use it to avoid overly complex merge operations. The common practice in Git is to do lot’s of small commit’s. But when your code builds fine and you don’t need that detailed piece of history anymore, you can compact these small commits into one or two big commits.</p>
-<p>The ultimate source and authority on all Git commands is <a href="https://git-scm.com/book/en/v2" target="_blank" rel="external"><em>Pro Git</em></a> the Git book.</p>
-<h2 id="Rebase_before_merge"><a href="#Rebase_before_merge" class="headerlink" title="Rebase before merge"></a>Rebase before merge</h2><p>A good practice is to always rebase before a merge. Git will produce a more comprehensive timeline. Especiallyt with with larger branches it will make it easier to fast forward.<br>What you do with rebase is to move your point in time where you branched. The less changes are on the timeline you want to merge (back) to, the chance of conflicts you have.</p>
-<h3 id="Rebase_to_simplify_merging"><a href="#Rebase_to_simplify_merging" class="headerlink" title="Rebase to simplify merging"></a>Rebase to simplify merging</h3><p>We have a master and one branch b1. After adding a third file and some content you needed to go back to master for some other work.</p>
-<pre><code>$ git lg
-* 6350dfa (HEAD, master) Add fourish content
-* 217709e Add fourth file.
-| * f20dfb3 (b1) Add more content
-| * 2e5d2df Add third file.
-|/  
-* df37868 Add second file
-* fd37cc9 Initial commit.
-</code></pre><p>If you merge b1 now into the master you end up with a hump in your history line. That is, of course, the historical correct representation. But in practice lot’s these little bumps make your timeline harder to understand. As we have made changes to different files, the order doesn’t really matter. (As long as you no major change to dependencies between those files.)<br>To rewrite history and straighten your timeline, checkout branch b1 first.</p>
-<pre><code>$ git checkout b1
-$ git lg
-* 6350dfa (master) Add fourish content
-* 217709e Add fourth file.
-| * f20dfb3 (HEAD, b1) Add more content
-| * 2e5d2df Add third file.
-|/  
-* df37868 Add second file
-* fd37cc9 Initial commit.
-</code></pre><p>Now execute the rebase command. What this command actually does goes as follow.<br>First the changes are save to a temporare place. The commit df37868 is checked out. Now Git applies the commits 217709e and 6350dfa. At last the saved changes 2e5d2df and f20dfb3 are applied.<br>The repository contains the same changes, but looks a lot clearer.</p>
-<pre><code>$ git rebase master
-First, rewinding head to replay your work on top of it...
-Applying: Add third file.
-Applying: Add more content
-$ git lg
-* de27624 (HEAD, b1) Add more content
-* 39dde4e Add third file.
-* 6350dfa (master) Add fourish content
-* 217709e Add fourth file.
-* df37868 Add second file
-* fd37cc9 Initial 
-</code></pre><p>This is a very  simple example. More complex scenarios are in Pro Git. Just imagine working on new features but get interupted by a couple of changes / fixes to the latest release.</p>
-<h2 id="Rebase_on_pull"><a href="#Rebase_on_pull" class="headerlink" title="Rebase on pull"></a>Rebase on pull</h2><p>To simplify the incorporation of changes from your team use git pull –rebase for every pull you made. Git will automatically check if can rebase the changes and keep your history simple.</p>
-<p>Make your life easier and put this command in your config file.<br> git config –global pull.rebase true.</p>
-<h2 id="Don_u2019t_mess_with_time"><a href="#Don_u2019t_mess_with_time" class="headerlink" title="Don’t mess with time"></a>Don’t mess with time</h2><p>As convenient as rebase is, you are changing local history. When the commits your are moving on the timeline only exist in your local repository nothing bad happens.<br>But if you try to rebase commits that are already pushed to upstream repositories you probably get in trouble. The Pro Git book is quite elaborate on these cases and the documentation to read if you want to dive deeper into rebasing.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2016/03/23/git_rebase/" data-id="cion35ctj000vulumie5dpicj" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-RHN-Satellite-Schema-Upgrade" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/09/RHN-Satellite-Schema-Upgrade/" class="article-date">
-  <time datetime="2016-02-09T18:19:42.000Z" itemprop="datePublished">2016-02-09</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/09/RHN-Satellite-Schema-Upgrade/">RHN Satellite Schema Upgrade.</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>A quick cheat-sheet for the occasional schema upgrade on RedHat Satellite management server.</p>
-<h2 id="Preparation"><a href="#Preparation" class="headerlink" title="Preparation"></a>Preparation</h2><p>Backup up existing Database. Beware, if you have huge or many channels the backup can easily exceed several GB’s. </p>
-<ul>
-<li><code>~$ sudo rhn-satellite stop --exclude postgresql</code></li>
-<li><code>~$ sudo db-control  online-backup /tmp/online-backup-before-schema-change</code></li>
-</ul>
-<h2 id="Update"><a href="#Update" class="headerlink" title="Update"></a>Update</h2><ul>
-<li><code>~$ sudo yum update</code></li>
-<li><code>~S sudo spacewalk-schema-upgrade</code></li>
-</ul>
-<p>check if upgrade is successfull</p>
-<ul>
-<li><code>~$ sudo rpm -q satellite-schema</code></li>
-<li><code>~$ sudo rhn-schema-version</code></li>
-</ul>
-<p>restart Server and clean the index</p>
-<ul>
-<li><code>~$ sudo rhn-satellite start --exclude postgresql</code></li>
-<li><code>~$ sudo service rhn-search cleanindex</code></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2016/02/09/RHN-Satellite-Schema-Upgrade/" data-id="cion35cu7001culumbem8qy7n" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RedHat-Linux/">RedHat Linux</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="title-JS-performance-tips" class="article article-type-title" itemscope itemprop="blogPost">
+        <section id="main"><article id="title-JS-performance-tips" class="article article-type-title" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/04/JS-performance-tips/" class="article-date">
   <time datetime="2016-02-04T21:32:44.000Z" itemprop="datePublished">2016-02-04</time>
@@ -242,8 +101,8 @@ $ git lg
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/04/JS-performance-tips/">Javascript performance tips</a>
+    <h1 class="article-title" itemprop="name">
+      Javascript performance tips
     </h1>
   
 
@@ -277,119 +136,29 @@ $ git lg
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-hexo" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/01/23/hexo/" class="article-date">
-  <time datetime="2016-01-23T21:32:17.000Z" itemprop="datePublished">2016-01-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Development/">Development</a>►<a class="article-category-link" href="/categories/Development/Javascript/">Javascript</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2016/02/09/RHN-Satellite-Schema-Upgrade/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/23/hexo/">Hexo</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Since this week the blog is cut out of the Wordpress site. As the update frequency is fairly low, I choose for a static site. To generate the pages I use Hexo, a Javascript generator running on node.js.<br>The configuration and publishing is as easy as in Wordpress, but without the fear for security leaks and constant upgrades.</p>
-<h2 id="Theme"><a href="#Theme" class="headerlink" title="Theme"></a>Theme</h2><p>For this blog I use the Hexo Landscape theme. It has good layout’s for the desktop as well as tablet and phone.</p>
-<h2 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h2><p>On the Wordpress site comments were disabled, they produced almost 99% spam. Akismet can prevent spam, but I don’t want to pay for spam-protection for such a small and lowtraffic site.<br>In Hexo you can use widget’s to connect to Disqus, but I don’t want to give too much out of hand. So for time, no comments on the static site either.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2016/01/23/hexo/" data-id="cion35ctf000oulumy5xywvfg" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-git-for-ubuntu" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/09/22/git-for-ubuntu/" class="article-date">
-  <time datetime="2014-09-22T11:23:17.000Z" itemprop="datePublished">2014-09-22</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+          RHN Satellite Schema Upgrade.
         
+      </div>
+    </a>
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/09/22/git-for-ubuntu/">Git for Ubuntu</a>
-    </h1>
   
+    <a href="/2016/01/23/hexo/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hexo</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Running a recent Git for Ubuntu can sometimes be problematic. The Git version in the offical Ubuntu archives lags behind the maintainers, stable, version. To solve this install the Maintainers team version.</p>
-<p>Add the PPA (personal Packages Archive) to your apt sources. Add either manually by editing sources.list or use add-apt-repository when available.</p>
-<p>Edit /etc/apt/sources.list<br><code>deb http://ppa.launchpad.net/git-core/ppa/ubuntu   precise main</code><br><code>deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu   precise main</code></p>
-<p>or</p>
-<p><code>sudo add-apt-repository ppa:git-core/ppa</code></p>
-<p>If add-apt-repository is not installed, install it with<br><code>sudo apt-get install python-software-properties</code><br><code>sudo apt-get update &amp;&amp; sudo apt-get install git</code></p>
-<p>In a corporate envrionment the case of an unverified key can rise a problem. Cause is that</p>
-<p><code>sudo apt-key adv --recv-keys</code>;</p>
-<p>may not work behind some firewalls. to solve this issue, follow these steps:</p>
-<p>Open  <a href="http://keyserver.ubuntu.com/" target="_blank" rel="external">http://keyserver.ubuntu.com/</a> in a Browser and search for the offending key. Don’t forget to mark the string as hex by prepending 0x.</p>
-<ul>
-<li>Get key from Ubuntu keyserver</li>
-<li>Insert into a file</li>
-<li><code>sudo pt-key add &lt;file&gt;</code></li>
-<li><code>sudo apt-get update</code></li>
-</ul>
-<p>For details see <a href="http://opensourceforgeeks.blogspot.in/2013/04/w-gpg-error-httpppalaunchpadnet-precise.html" target="_blank" rel="external">http://opensourceforgeeks.blogspot.in/2013/04/w-gpg-error-httpppalaunchpadnet-precise.html</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/09/22/git-for-ubuntu/" data-id="cion35ctx0010ulumi6y5qpcb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
 
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 </section>
         
           <aside id="sidebar">

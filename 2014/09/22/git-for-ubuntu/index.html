@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://devop.gerull.nl/2014/09/22/git-for-ubuntu/index.html">
 <meta property="og:site_name" content="Development & Operations">
 <meta property="og:description" content="Running a recent Git for Ubuntu can sometimes be problematic. The Git version in the offical Ubuntu archives lags behind the maintainers, stable, version. To solve this install the Maintainers team ve">
-<meta property="og:updated_time" content="2016-01-21T16:22:34.000Z">
+<meta property="og:updated_time" content="2016-05-25T16:28:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git for Ubuntu">
 <meta name="twitter:description" content="Running a recent Git for Ubuntu can sometimes be problematic. The Git version in the offical Ubuntu archives lags behind the maintainers, stable, version. To solve this install the Maintainers team ve">
@@ -26,6 +26,19 @@
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-40667672-4', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
 
 </head>
 <body>
@@ -52,6 +65,8 @@
         
           <a class="main-nav-link" href="/archives">Archives</a>
         
+          <a class="main-nav-link" href="/about">About</a>
+        
       </nav>
       <nav id="sub-nav">
         
@@ -73,7 +88,7 @@
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>►<a class="article-category-link" href="/categories/Linux/Git/">Git</a>
+    <a class="article-category-link" href="/categories/Git/">Git</a>
   </div>
 
   </div>
@@ -93,26 +108,27 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Running a recent Git for Ubuntu can sometimes be problematic. The Git version in the offical Ubuntu archives lags behind the maintainers, stable, version. To solve this install the Maintainers team version.</p>
-<p>Add the PPA (personal Packages Archive) to your apt sources</p>
+<p>Add the PPA (personal Packages Archive) to your apt sources. Add either manually by editing sources.list or use add-apt-repository when available.</p>
 <p>Edit /etc/apt/sources.list<br><code>deb http://ppa.launchpad.net/git-core/ppa/ubuntu   precise main</code><br><code>deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu   precise main</code></p>
-<p>or<br><code>sudo add-apt-repository ppa:git-core/ppa</code></p>
-<p>If add-apt-repository is not installed, install it with<br><code>apt-get install python-software-properties</code><br><code>sudo apt-get update &amp;&amp; sudo apt-get install git</code></p>
+<p>or</p>
+<p><code>sudo add-apt-repository ppa:git-core/ppa</code></p>
+<p>If add-apt-repository is not installed, install it with<br><code>sudo apt-get install python-software-properties</code><br><code>sudo apt-get update &amp;&amp; sudo apt-get install git</code></p>
 <p>In a corporate envrionment the case of an unverified key can rise a problem. Cause is that</p>
-<p><code>apt-key adv --recv-keys</code>;</p>
+<p><code>sudo apt-key adv --recv-keys</code>;</p>
 <p>may not work behind some firewalls. to solve this issue, follow these steps:</p>
 <p>Open  <a href="http://keyserver.ubuntu.com/" target="_blank" rel="external">http://keyserver.ubuntu.com/</a> in a Browser and search for the offending key. Don’t forget to mark the string as hex by prepending 0x.</p>
 <ul>
 <li>Get key from Ubuntu keyserver</li>
 <li>Insert into a file</li>
-<li><code>apt-key add &lt;file&gt;</code></li>
-<li><code>apt-get update</code></li>
+<li><code>sudo pt-key add &lt;file&gt;</code></li>
+<li><code>sudo apt-get update</code></li>
 </ul>
 <p>For details see <a href="http://opensourceforgeeks.blogspot.in/2013/04/w-gpg-error-httpppalaunchpadnet-precise.html" target="_blank" rel="external">http://opensourceforgeeks.blogspot.in/2013/04/w-gpg-error-httpppalaunchpadnet-precise.html</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/09/22/git-for-ubuntu/" data-id="cim7oi92z000z40umvej9wl59" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/09/22/git-for-ubuntu/" data-id="cion35ctx0010ulumi6y5qpcb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li></ul>
@@ -151,7 +167,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -160,7 +176,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Perfomance/">Perfomance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RedHat-Linux/">RedHat Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -169,7 +185,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/File-System/" style="font-size: 17.5px;">File System</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 15px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 15px;">Logical Volumes</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
+      <a href="/tags/File-System/" style="font-size: 17.5px;">File System</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 15px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 15px;">Logical Volumes</a> <a href="/tags/Perfomance/" style="font-size: 10px;">Perfomance</a> <a href="/tags/RedHat-Linux/" style="font-size: 10px;">RedHat Linux</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
     </div>
   </div>
 
@@ -194,6 +210,8 @@
     <a href="/" class="mobile-nav-link">Home</a>
   
     <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
   
 </nav>
     

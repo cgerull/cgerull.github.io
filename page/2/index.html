@@ -25,6 +25,19 @@
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-40667672-4', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
 
 </head>
 <body>
@@ -51,6 +64,8 @@
         
           <a class="main-nav-link" href="/archives">Archives</a>
         
+          <a class="main-nav-link" href="/about">About</a>
+        
       </nav>
       <nav id="sub-nav">
         
@@ -66,6 +81,120 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-shrink-logic-volume" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/04/08/shrink-logic-volume/" class="article-date">
+  <time datetime="2014-04-08T19:37:35.000Z" itemprop="datePublished">2014-04-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/04/08/shrink-logic-volume/">Shrink logic volume</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>In this post I will point out the steps to shrink logic volumes.</p>
+<p>The order of shrinking is just the reverse of expanding:</p>
+<ul>
+<li>un-mount the file system</li>
+<li>check file system integrity</li>
+<li>shrink file system</li>
+<li>shrink logic volume.</li>
+</ul>
+<p><strong>Before you start make sure you have recent backup of the disk.</strong> </p>
+<h2 id="The_steps_in_detail"><a href="#The_steps_in_detail" class="headerlink" title="The steps in detail"></a>The steps in detail</h2><p>1. First un-mount the file system to make sure no one has access anymore. For some file systems you must switch to single user mode for this. Then check the file system integrity.<br>/yyy is the mount point<br><code>sudo umount /yyy</code><br>This is the logical volume. vg-xxx is the volume group and yyy is the symbolic name of the lv.<br><code>sudo e2fsck -f /dev/mapper/vg-xxx/yyy</code></p>
+<p>2. Shrink the file system to some point<br><code>sudo resize2fs /dev/mapper/vg-xxx/yyy 2000M</code><br>Here it goes down to 2G, but <strong>above</strong> the physical size of existing files. This command works for both ext2 and ext3.</p>
+<p>3. Shrink the logic volume<br><code>sudo lvresize -L -1G /dev/mapper/vg-xxx/yyy</code><br>Here the logic volume is shrunk by 1G. Don’t shrink beyond your file system size, the consequences are disastrous. Do the math.</p>
+<p>4. Expand the file system to fit the shrunk logic volume<br><code>sudo resize2fs -p /dev/mapper/vg-xxx/yyy</code></p>
+<p>5. Remount the file system.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devop.gerull.nl/2014/04/08/shrink-logic-volume/" data-id="cion35ct7000culumikze2az3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-expand-logic-volume" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/23/expand-logic-volume/" class="article-date">
+  <time datetime="2014-03-23T21:20:10.000Z" itemprop="datePublished">2014-03-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/03/23/expand-logic-volume/">Expand logic volume</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Logical volumes are easy to extend. The basic steps are like this: check free space –&gt; expand logic volume –&gt; expand file system. You can do it even with file system mounted.</p>
+<p>Although I recommend to make a backup first and switch to single user mode  if it is a server.</p>
+<p>Here’s the recipe:</p>
+<p>1. Check the mounted file system with</p>
+<p><code>df -h</code></p>
+<p>2. Check the available logic volumes</p>
+<p><code>sudo lvdisplay</code></p>
+<p>3. Check how much free space available in this volume group for the growth</p>
+<p><code>sudo vgdisplay</code></p>
+<p>4. Now resize the logic volume up to some point (of course within the free space limit)</p>
+<p><code>sudo lvresize -L +1GB /dev/mapper/vg-xxx/yyy</code></p>
+<p>5. Check the new size of the logic volume</p>
+<p><code>sudo lvdisplay</code></p>
+<p>6. Expand the existing file system to the size of logic volume</p>
+<p><code>sudo resize2fs -p /dev/mapper/vg-xxx/yyy</code></p>
+<p>This command works for both ext2 and ext3 file systems.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devop.gerull.nl/2014/03/23/expand-logic-volume/" data-id="cion35cu10016ulumjq0aqdhz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-volume-layout" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -131,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/03/01/volume-layout/" data-id="cim7oi921000040umtojkvdrx" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/03/01/volume-layout/" data-id="cion35csw0001ulumnghbexk4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Installation/">Installation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a></li></ul>
@@ -187,7 +316,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://devop.gerull.nl/2014/02/22/linux-file-system/" data-id="cim7oi92n000i40umj2ys5rgj" class="article-share-link">Share</a>
+      <a data-url="http://devop.gerull.nl/2014/02/22/linux-file-system/" data-id="cion35ctb000julumt5dx5dlm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/File-System/">File System</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Install/">Install</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
@@ -212,7 +341,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/">Development</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Development/Javascript/">Javascript</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -221,7 +350,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/File-System/">File System</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Install/">Install</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Installation/">Installation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logical-Volumes/">Logical Volumes</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Perfomance/">Perfomance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RedHat-Linux/">RedHat Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -230,7 +359,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/File-System/" style="font-size: 17.5px;">File System</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 15px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 15px;">Logical Volumes</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
+      <a href="/tags/File-System/" style="font-size: 17.5px;">File System</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Install/" style="font-size: 15px;">Install</a> <a href="/tags/Installation/" style="font-size: 10px;">Installation</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Linux/" style="font-size: 20px;">Linux</a> <a href="/tags/Logical-Volumes/" style="font-size: 15px;">Logical Volumes</a> <a href="/tags/Perfomance/" style="font-size: 10px;">Perfomance</a> <a href="/tags/RedHat-Linux/" style="font-size: 10px;">RedHat Linux</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a>
     </div>
   </div>
 
@@ -255,6 +384,8 @@
     <a href="/" class="mobile-nav-link">Home</a>
   
     <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
   
 </nav>
     

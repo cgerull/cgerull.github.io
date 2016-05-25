@@ -3,17 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: Git | Development &amp; Operations</title>
+  <title>RHN Satellite Schema Upgrade. | Development &amp; Operations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="A collection of short articles to summerize and memorize seldom used tasks.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Development & Operations">
-<meta property="og:url" content="http://devop.gerull.nl/tags/Git/index.html">
+  <meta name="description" content="A quick cheat-sheet for the occasional schema upgrade on RedHat Satellite management server.
+PreparationBackup up existing Database. Beware, if you have huge or many channels the backup can easily exc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RHN Satellite Schema Upgrade.">
+<meta property="og:url" content="http://devop.gerull.nl/2016/02/09/RHN-Satellite-Schema-Upgrade/index.html">
 <meta property="og:site_name" content="Development & Operations">
-<meta property="og:description" content="A collection of short articles to summerize and memorize seldom used tasks.">
+<meta property="og:description" content="A quick cheat-sheet for the occasional schema upgrade on RedHat Satellite management server.
+PreparationBackup up existing Database. Beware, if you have huge or many channels the backup can easily exc">
+<meta property="og:updated_time" content="2016-03-26T18:33:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Development & Operations">
-<meta name="twitter:description" content="A collection of short articles to summerize and memorize seldom used tasks.">
+<meta name="twitter:title" content="RHN Satellite Schema Upgrade.">
+<meta name="twitter:description" content="A quick cheat-sheet for the occasional schema upgrade on RedHat Satellite management server.
+PreparationBackup up existing Database. Beware, if you have huge or many channels the backup can easily exc">
 <meta name="twitter:creator" content="@cgerull">
 <link rel="publisher" href="https://plus.google.com/+cgerull">
   
@@ -80,68 +84,87 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/03/23/git_rebase/" class="archive-article-date">
-  <time datetime="2016-03-23T21:23:17.000Z" itemprop="datePublished">Mar 23</time>
+        <section id="main"><article id="post-RHN-Satellite-Schema-Upgrade" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/09/RHN-Satellite-Schema-Upgrade/" class="article-date">
+  <time datetime="2016-02-09T18:19:42.000Z" itemprop="datePublished">2016-02-09</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/03/23/git_rebase/">Git rebase</a>
+    <h1 class="article-title" itemprop="name">
+      RHN Satellite Schema Upgrade.
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
+    <div class="article-entry" itemprop="articleBody">
       
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2014" class="archive-year">2014</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2014/09/22/git-for-ubuntu/" class="archive-article-date">
-  <time datetime="2014-09-22T11:23:17.000Z" itemprop="datePublished">Sep 22</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/09/22/git-for-ubuntu/">Git for Ubuntu</a>
-    </h1>
-  
+        <p>A quick cheat-sheet for the occasional schema upgrade on RedHat Satellite management server.</p>
+<h2 id="Preparation"><a href="#Preparation" class="headerlink" title="Preparation"></a>Preparation</h2><p>Backup up existing Database. Beware, if you have huge or many channels the backup can easily exceed several GB’s. </p>
+<ul>
+<li><code>~$ sudo rhn-satellite stop --exclude postgresql</code></li>
+<li><code>~$ sudo db-control  online-backup /tmp/online-backup-before-schema-change</code></li>
+</ul>
+<h2 id="Update"><a href="#Update" class="headerlink" title="Update"></a>Update</h2><ul>
+<li><code>~$ sudo yum update</code></li>
+<li><code>~S sudo spacewalk-schema-upgrade</code></li>
+</ul>
+<p>check if upgrade is successfull</p>
+<ul>
+<li><code>~$ sudo rpm -q satellite-schema</code></li>
+<li><code>~$ sudo rhn-schema-version</code></li>
+</ul>
+<p>restart Server and clean the index</p>
+<ul>
+<li><code>~$ sudo rhn-satellite start --exclude postgresql</code></li>
+<li><code>~$ sudo service rhn-search cleanindex</code></li>
+</ul>
 
-    </header>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devop.gerull.nl/2016/02/09/RHN-Satellite-Schema-Upgrade/" data-id="cion35cu7001culumbem8qy7n" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RedHat-Linux/">RedHat Linux</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/03/23/git_rebase/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Git rebase
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/02/04/JS-performance-tips/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Javascript performance tips</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
 </section>
         
           <aside id="sidebar">
